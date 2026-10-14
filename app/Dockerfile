@@ -1,7 +1,15 @@
 # syntax=docker/dockerfile:1
 # Builds the PokeFolio Flutter web app and serves it with nginx.
 
-FROM ghcr.io/cirruslabs/flutter:stable AS build
+FROM debian:bookworm-slim AS build
+# Pinned to the same Flutter release as CI (.github/workflows/ci.yml).
+ARG FLUTTER_VERSION=3.47.7
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends ca-certificates curl git unzip xz-utils \
+ && rm -rf /var/lib/apt/lists/*
+RUN git clone --depth 1 --branch ${FLUTTER_VERSION} https://github.com/flutter/flutter.git /opt/flutter
+ENV PATH="/opt/flutter/bin:${PATH}"
+RUN flutter config --no-analytics --enable-web && flutter precache --web
 WORKDIR /app
 COPY pubspec.yaml pubspec.lock ./
 RUN flutter pub get
