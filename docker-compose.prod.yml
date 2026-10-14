@@ -1,0 +1,16 @@
+# Production overrides. Use together with docker-compose.yml:
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml --profile web up -d --build
+# Put a TLS-terminating reverse proxy (Caddy, Traefik, nginx) in front of the backend and web containers.
+services:
+  db:
+    ports: !reset []
+    restart: unless-stopped
+
+  backend:
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      POKEFOLIO_ALLOWED_ORIGINS: ${POKEFOLIO_ALLOWED_ORIGINS:?set POKEFOLIO_ALLOWED_ORIGINS to the public web origin}
+    restart: unless-stopped
+
+  web:
+    restart: unless-stopped

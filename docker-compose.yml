@@ -1,0 +1,56 @@
+# Local development stack for PokeFolio.
+#   cp .env.example .env   # then fill in the secrets
+#   docker compose up -d --build                 # database + backend
+#   docker compose --profile web up -d --build   # + Flutter web app on http://localhost:8081
+name: pokefolio
+
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: pokefolio
+      POSTGRES_USER: ${POKEFOLIO_DB_USER:-pokefolio}
+      POSTGRES_PASSWORD: ${POKEFOLIO_DB_PASSWORD:?set POKEFOLIO_DB_PASSWORD in .env}
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - pokefolio-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d pokefolio"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+      args:
+        MAVEN_MIRROR_URL: ${MAVEN_MIRROR_URL:-}
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-dev}
+      POKEFOLIO_DB_URL: jdbc:postgresql://db:5432/pokefolio
+      POKEFOLIO_DB_USER: ${POKEFOLIO_DB_USER:-pokefolio}
+      POKEFOLIO_DB_PASSWORD: ${POKEFOLIO_DB_PASSWORD}
+      POKEFOLIO_JWT_SECRET: ${POKEFOLIO_JWT_SECRET:?set POKEFOLIO_JWT_SECRET in .env}
+      POKEFOLIO_ALLOWED_ORIGINS: ${POKEFOLIO_ALLOWED_ORIGINS:-http://localhost:*}
+      POKEFOLIO_PROVIDER: ${POKEFOLIO_PROVIDER:-mock}
+      POKEMON_API_KEY: ${POKEMON_API_KEY:-}
+    ports:
+      - "127.0.0.1:8080:8080"
+
+  web:
+    profiles: ["web"]
+    build:
+      context: ./app
+      args:
+        POKEFOLIO_API_URL: ${POKEFOLIO_PUBLIC_API_URL:-http://localhost:8080}
+    depends_on:
+      - backend
+    ports:
+      - "127.0.0.1:8081:80"
+
+volumes:
+  pokefolio-db:

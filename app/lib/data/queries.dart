@@ -17,18 +17,33 @@ final portfolioHistoryProvider = FutureProvider.autoDispose.family<PortfolioHist
 
 typedef CollectionQuery = ({String query, CollectionSort sort});
 
-final collectionProvider = FutureProvider.autoDispose.family<PageResult<CollectionEntry>, CollectionQuery>(
-  (ref, q) => ref.watch(portfolioRepositoryProvider).collection(query: q.query, sort: q.sort, size: 500),
-);
+/// Largest page size the API accepts for list endpoints.
+const maxPageSize = 100;
 
-final activeHoldingsProvider = FutureProvider.autoDispose<List<Holding>>(
-  (ref) async =>
-      (await ref.watch(portfolioRepositoryProvider).holdings(status: HoldingStatus.active, size: 200)).content,
-);
+/// Loads every page of a paginated endpoint, for views that need the complete list.
+Future<List<T>> fetchAllPages<T>(Future<PageResult<T>> Function(int page) load) async {
+  final items = <T>[];
+  for (var page = 0; ; page++) {
+    final result = await load(page);
+    items.addAll(result.content);
+    if (!result.hasMore) return items;
+  }
+}
 
-final cardHoldingsProvider = FutureProvider.autoDispose.family<List<Holding>, String>(
-  (ref, cardId) async => (await ref.watch(portfolioRepositoryProvider).holdings(cardId: cardId, size: 200)).content,
-);
+final collectionProvider = FutureProvider.autoDispose.family<List<CollectionEntry>, CollectionQuery>((ref, q) {
+  final repo = ref.watch(portfolioRepositoryProvider);
+  return fetchAllPages((page) => repo.collection(query: q.query, sort: q.sort, page: page, size: maxPageSize));
+});
+
+final activeHoldingsProvider = FutureProvider.autoDispose<List<Holding>>((ref) {
+  final repo = ref.watch(portfolioRepositoryProvider);
+  return fetchAllPages((page) => repo.holdings(status: HoldingStatus.active, page: page, size: maxPageSize));
+});
+
+final cardHoldingsProvider = FutureProvider.autoDispose.family<List<Holding>, String>((ref, cardId) {
+  final repo = ref.watch(portfolioRepositoryProvider);
+  return fetchAllPages((page) => repo.holdings(cardId: cardId, page: page, size: maxPageSize));
+});
 
 final holdingProvider = FutureProvider.autoDispose.family<Holding, String>(
   (ref, id) => ref.watch(portfolioRepositoryProvider).holding(id),

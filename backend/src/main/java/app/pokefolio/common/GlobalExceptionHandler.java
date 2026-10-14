@@ -1,5 +1,6 @@
 package app.pokefolio.common;
 
+import jakarta.validation.ConstraintViolationException;
 import java.net.URI;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -72,6 +73,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HandlerMethodValidationException.class)
     ProblemDetail invalidParameters(HandlerMethodValidationException ex) {
         return problem(HttpStatus.BAD_REQUEST, "validation_failed", "Request parameter validation failed");
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    ProblemDetail constraintViolation(ConstraintViolationException ex) {
+        ProblemDetail detail = problem(HttpStatus.BAD_REQUEST, "validation_failed", "Request parameter validation failed");
+        Map<String, String> errors = new LinkedHashMap<>();
+        ex.getConstraintViolations().forEach(v -> {
+            String path = v.getPropertyPath().toString();
+            errors.putIfAbsent(path.substring(path.lastIndexOf('.') + 1), v.getMessage());
+        });
+        detail.setProperty("errors", errors);
+        return detail;
     }
 
     @ExceptionHandler({HttpMessageNotReadableException.class, MethodArgumentTypeMismatchException.class})

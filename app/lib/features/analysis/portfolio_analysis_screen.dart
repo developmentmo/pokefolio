@@ -91,7 +91,7 @@ class _PortfolioAnalysisScreenState extends ConsumerState<PortfolioAnalysisScree
                 AsyncView(
                   value: collection,
                   onRetry: () => ref.invalidate(collectionProvider),
-                  data: (page) => _Breakdown(entries: page.content),
+                  data: (entries) => _Breakdown(entries: entries),
                 ),
               ],
             ),

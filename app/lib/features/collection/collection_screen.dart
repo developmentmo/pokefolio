@@ -90,8 +90,8 @@ class _CollectionScreenState extends ConsumerState<CollectionScreen> {
                 child: AsyncView(
                   value: result,
                   onRetry: () => ref.invalidate(collectionProvider),
-                  data: (page) {
-                    if (page.content.isEmpty) {
+                  data: (entries) {
+                    if (entries.isEmpty) {
                       return _query.isEmpty
                           ? EmptyView(
                               icon: Icons.style_outlined,
@@ -104,7 +104,7 @@ class _CollectionScreenState extends ConsumerState<CollectionScreen> {
                             )
                           : const EmptyView(icon: Icons.search_off, title: 'Geen kaarten gevonden');
                     }
-                    return _grid ? _Grid(entries: page.content) : _List(entries: page.content);
+                    return _grid ? _Grid(entries: entries) : _List(entries: entries);
                   },
                 ),
               ),

@@ -140,11 +140,14 @@ public class PriceService {
                 continue;
             }
             try {
-                for (PriceProvider.Quote quote : provider.history(ref(card), from, to)) {
-                    if (store(card, quote)) {
-                        stored++;
-                    }
-                }
+                // the card has no observations yet, so no duplicate check per row is needed
+                List<PriceObservation> batch = provider.history(ref(card), from, to).stream()
+                        .filter(q -> properties.currency().equals(q.currency()) && q.market() != null)
+                        .map(q -> new PriceObservation(card, provider.sourceId(), q.currency(), q.market(), q.low(),
+                                q.high(), provider.sampleData(), q.observedAt(), clock.instant()))
+                        .toList();
+                observations.saveAll(batch);
+                stored += batch.size();
             } catch (RuntimeException e) {
                 log.warn("Price backfill failed for card {}: {}", card.getExternalId(), e.getMessage());
             }
