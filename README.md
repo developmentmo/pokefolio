@@ -38,10 +38,8 @@ herstart.
 ```bash
 cp .env.example .env
 # Vul minimaal POKEFOLIO_DB_PASSWORD en POKEFOLIO_JWT_SECRET in:
-# databasewachtwoord
-#   openssl rand -base64 24
-# JWT-secret (minimaal 32 bytes)
-#   openssl rand -base64 48
+#   databasewachtwoord:            openssl rand -base64 24
+#   JWT-secret (minimaal 32 bytes): openssl rand -base64 48
 # PostgreSQL + backend op http://localhost:8080
 docker compose up -d --build
 # + webapp op http://localhost:8081
