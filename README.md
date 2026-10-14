@@ -36,10 +36,8 @@ herstart.
 ### Volledige stack met Docker Compose
 
 ```bash
-cp .env.example .env
-# Vul minimaal POKEFOLIO_DB_PASSWORD en POKEFOLIO_JWT_SECRET in:
-#   databasewachtwoord:            openssl rand -base64 24
-#   JWT-secret (minimaal 32 bytes): openssl rand -base64 48
+# Maakt .env aan met een willekeurig databasewachtwoord en JWT-secret
+./scripts/init-env.sh
 # PostgreSQL + backend op http://localhost:8080
 docker compose up -d --build
 # + webapp op http://localhost:8081
