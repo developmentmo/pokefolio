@@ -1,0 +1,9 @@
+pokefolio:
+  security:
+    jwt-secret: test-only-secret-that-is-at-least-32-bytes-long
+    allowed-origins: http://localhost:*
+  pricing:
+    backfill-days: 60
+logging:
+  level:
+    app.pokefolio: INFO

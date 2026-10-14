@@ -1,0 +1,15 @@
+# Production: every secret and endpoint must be provided via environment variables.
+spring:
+  datasource:
+    hikari:
+      maximum-pool-size: ${POKEFOLIO_DB_POOL_SIZE:10}
+
+springdoc:
+  api-docs:
+    enabled: ${POKEFOLIO_SWAGGER_ENABLED:false}
+  swagger-ui:
+    enabled: ${POKEFOLIO_SWAGGER_ENABLED:false}
+
+logging:
+  level:
+    root: INFO

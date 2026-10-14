@@ -1,0 +1,13 @@
+# Backend
+backend/target/
+*.log
+
+# Secrets
+.env
+*.env.local
+
+# IDE / OS
+.idea/
+.vscode/
+*.iml
+.DS_Store

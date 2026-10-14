@@ -1,0 +1,17 @@
+# Local development. Secrets still come from the environment (.env), never from this file.
+spring:
+  datasource:
+    password: ${POKEFOLIO_DB_PASSWORD:pokefolio}
+
+pokefolio:
+  security:
+    allowed-origins: ${POKEFOLIO_ALLOWED_ORIGINS:http://localhost:*,http://127.0.0.1:*}
+
+management:
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    app.pokefolio: DEBUG

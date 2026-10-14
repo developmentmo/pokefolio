@@ -1,0 +1,71 @@
+spring:
+  application:
+    name: pokefolio
+  profiles:
+    default: dev
+  datasource:
+    url: ${POKEFOLIO_DB_URL:jdbc:postgresql://localhost:5432/pokefolio}
+    username: ${POKEFOLIO_DB_USER:pokefolio}
+    password: ${POKEFOLIO_DB_PASSWORD:}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate.jdbc.time_zone: UTC
+  flyway:
+    enabled: true
+  threads:
+    virtual:
+      enabled: true
+
+server:
+  port: ${PORT:8080}
+  shutdown: graceful
+  forward-headers-strategy: framework
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: never
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: PokeFolio
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+pokefolio:
+  # mock | pokemon-api (pokemon-api is disabled until its contract is verified)
+  provider: ${POKEFOLIO_PROVIDER:mock}
+  catalog:
+    sync-on-startup: true
+  pricing:
+    currency: EUR
+    stale-after: 48h
+    backfill-days: 400
+    refresh-cron: ${POKEFOLIO_PRICE_REFRESH_CRON:0 0 6 * * *}
+  security:
+    jwt-secret: ${POKEFOLIO_JWT_SECRET:}
+    access-token-ttl: 15m
+    refresh-token-ttl: 30d
+    password-reset-ttl: 30m
+    allowed-origins: ${POKEFOLIO_ALLOWED_ORIGINS:}
+  pokemon-api:
+    base-url: ${POKEMON_API_BASE_URL:}
+    api-key: ${POKEMON_API_KEY:}
+    connect-timeout: 5s
+    read-timeout: 10s
