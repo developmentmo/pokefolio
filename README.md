@@ -38,10 +38,14 @@ herstart.
 ```bash
 cp .env.example .env
 # Vul minimaal POKEFOLIO_DB_PASSWORD en POKEFOLIO_JWT_SECRET in:
-#   openssl rand -base64 24   # databasewachtwoord
-#   openssl rand -base64 48   # JWT-secret (minimaal 32 bytes)
-docker compose up -d --build                  # PostgreSQL + backend op http://localhost:8080
-docker compose --profile web up -d --build    # + webapp op http://localhost:8081
+# databasewachtwoord
+#   openssl rand -base64 24
+# JWT-secret (minimaal 32 bytes)
+#   openssl rand -base64 48
+# PostgreSQL + backend op http://localhost:8080
+docker compose up -d --build
+# + webapp op http://localhost:8081
+docker compose --profile web up -d --build
 ```
 
 Controleer de backend met `curl http://localhost:8080/actuator/health/readiness`. In het `dev`-profiel staat de
@@ -61,7 +65,8 @@ flutter run -d chrome --dart-define=POKEFOLIO_API_URL=http://localhost:8080
 ## Tests en kwaliteitscontroles
 
 ```bash
-cd backend && mvn verify            # unit- en integratietests (Testcontainers, Docker vereist)
+# unit- en integratietests (Testcontainers, Docker vereist)
+cd backend && mvn verify
 
 cd app
 dart format --line-length 120 --set-exit-if-changed lib test

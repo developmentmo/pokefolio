@@ -34,10 +34,12 @@ Verschil tussen profielen:
 ## Productie met Docker Compose
 
 ```bash
-cp .env.example .env     # vul de geheimen in, zet POKEFOLIO_ALLOWED_ORIGINS op je publieke web-origin
+# vul de geheimen in, zet POKEFOLIO_ALLOWED_ORIGINS op je publieke web-origin
+cp .env.example .env
                          # en POKEFOLIO_PUBLIC_API_URL op de publieke API-URL
 docker compose -f docker-compose.yml -f docker-compose.prod.yml --profile web up -d --build
-docker compose ps        # backend moet "healthy" worden
+# backend moet "healthy" worden
+docker compose ps
 ```
 
 Zet een reverse proxy met TLS (Caddy, Traefik of nginx) voor `backend` (8080) en `web` (8081). Backend en web
