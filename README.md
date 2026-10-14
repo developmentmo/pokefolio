@@ -44,7 +44,9 @@ docker compose up -d --build
 docker compose --profile web up -d --build
 ```
 
-Controleer de backend met `curl http://localhost:8080/actuator/health/readiness`. In het `dev`-profiel staat de
+Controleer de backend met `curl http://localhost:8080/actuator/health/readiness`. In het `dev`-profiel (standaard
+in Compose) maakt de backend bij de eerste start het demo-account `demo@pokefolio.app` / `pokefolio-demo` aan, met
+een kleine voorbeeldcollectie. In `prod` bestaat dat account niet. In het `dev`-profiel staat de
 API-documentatie op http://localhost:8080/swagger-ui.html.
 
 ### Lokaal ontwikkelen
