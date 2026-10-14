@@ -24,8 +24,11 @@ Zonder `POKEFOLIO_API_URL` draait de app volledig in-memory met een demo-account
 ```bash
 cd app
 flutter pub get
-flutter run -d chrome          # of een Android/iOS-device
+flutter run -d chrome
 ```
+
+Voor Android of iOS: `flutter devices` toont de beschikbare apparaten, start daarna met `flutter run -d <device-id>`.
+Zet geen commentaar (`# ...`) achter het commando: in PowerShell en cmd wordt `#` dan als bestandsnaam meegegeven.
 
 Inloggen kan met `demo@pokefolio.app` / `pokefolio-demo`, of registreer een nieuw account. Gegevens verdwijnen bij
 herstart.

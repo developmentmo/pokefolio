@@ -62,7 +62,8 @@ cd app && flutter build web --release --no-web-resources-cdn \
 ```bash
 cd app
 flutter build apk --release --dart-define=POKEFOLIO_API_URL=https://api.example.com
-flutter build ipa --release --dart-define=POKEFOLIO_API_URL=https://api.example.com   # op macOS met Xcode
+# iOS: alleen op macOS met Xcode
+flutter build ipa --release --dart-define=POKEFOLIO_API_URL=https://api.example.com
 ```
 
 Ondertekening (Android keystore, Apple-certificaten) is niet in deze repository opgenomen en hoort in de
